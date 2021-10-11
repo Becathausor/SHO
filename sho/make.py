@@ -1,11 +1,17 @@
 """Wrappers that captures parameters of a function
 and returns an operator with a given interface."""
 
+
+cost = 0
+
+
 def func(cover, **kwargs):
     """Make an objective function from the given function.
     An objective function takes a solution and returns a scalar."""
     def f(sol):
-        return cover(sol,**kwargs)
+        global cost
+        cost += 1
+        return cover(sol, **kwargs)
     return f
 
 

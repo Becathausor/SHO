@@ -38,13 +38,15 @@ def greedy(func, init, neighb, again):
     return best_val, best_sol
 
 
-def simu_annealing(func, init, neighb, again, T_init=2, alpha=0.5, beta=2):
+def simu_annealing(func, init, neighb, again, T_init=2, alpha=0.5, beta=2, evaluation=True):
     """Iterative randomized greedy heuristic template."""
     best_sol = init()
     best_val = func(best_sol)
     val, sol = best_val, best_sol
     T = T_init
     i = 1
+    if evaluation:
+        L_val = []
 
     # Fonction de recui simulé
     def test_recui(f0, f1, t_instant):
@@ -58,10 +60,18 @@ def simu_annealing(func, init, neighb, again, T_init=2, alpha=0.5, beta=2):
         if val >= best_val:
             best_val = val
             best_sol = sol
+
         elif test_recui(best_val, val, T):
             best_val, best_sol = val, sol
+
+        if evaluation:
+            L_val.append(best_val)
+
         i += 1
         T /= beta
+
+    if evaluation:
+        return L_val, best_sol
 
     return best_val, best_sol
 
@@ -92,7 +102,9 @@ def stochastic_heuristic(func, init, neighb, again, n_pop=100, n_select=10, new_
 
     while again(i, repr_val, repr_sol):
         # Next Generation
+        raise NotImplementedError
         pop = np.array([neighb(params_neigh) for i in range(n_pop)])
+
         scores = np.array(list(map(func, pop)))
 
         # Select best individuals

@@ -183,10 +183,10 @@ if __name__ == "__main__":
         # sensors = bit.to_sensors(sol)
 
     # Fancy output.
-    print("\n{} : {}".format(val, sensors))
+    print("\nQuality {} : {}".format(val, sensors))
 
     shape = (the.domain_width, the.domain_width)
-
+    print(make.cost)
     fig = plt.figure()
 
     if the.nb_sensors == 1 and the.domain_width <= 50:
@@ -206,5 +206,11 @@ if __name__ == "__main__":
                          the.sensor_range * the.domain_width)
     domain = plot.highlight_sensors(domain, sensors)
     ax2.imshow(domain)
+    plt.title(the.solver)
+    plt.show()
+
+    plt.plot( val)
+    plt.xlabel("Iteration cost")
+    plt.ylabel("Quality")
     plt.title(the.solver)
     plt.show()
