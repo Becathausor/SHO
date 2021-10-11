@@ -154,19 +154,16 @@ if __name__ == "__main__":
 
     elif the.solver == "num_stochastic":
         val, sol = algo.stochastic_heuristic(
-            make.func(bit.cover_sum,
+            make.func(num.cover_sum,
                       domain_width=the.domain_width,
                       sensor_range=the.sensor_range,
                       dim=d * the.nb_sensors),
-            make.init(bit.rand,
-                      domain_width=the.domain_width,
-                      nb_sensors=the.nb_sensors),
-            make.neig(bit.neighb_square,
-                      scale=the.variation_scale,
-                      domain_width=the.domain_width),
+            make.init(num.rand,
+                      dim=d * the.nb_sensors,
+                      scale=the.domain_width),
+            make.neig(num.gaussian, test=True),
             iters
         )
-        # sensors = bit.to_sensors(sol)
 
     elif the.solver == "bit_stochastic":
         raise NotImplementedError

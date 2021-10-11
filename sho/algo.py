@@ -4,6 +4,7 @@
 import numpy as np
 from sho import num
 
+
 def random(func, init, again):
     """Iterative random search template."""
     best_sol = init()
@@ -82,13 +83,16 @@ def stochastic_heuristic(func, init, neighb, again, n_pop=100, n_select=10, new_
     repr_sol = best_sol[0]
 
     # Prepare next generation
-    mean_hat = np.mean(best_sol)
-    cov_hat = np.cov(best_sol)
+    print(f"best_sol: {best_sol.shape}")
+    mean_hat = (1 / n_select) * sum(best_sol)
+    best_sol_bar = best_sol - mean_hat
+    cov_hat = (1 / n_select) * np.sum(np.dot(sol, sol.T) for sol in best_sol_bar)
+    params_neigh = (mean_hat, cov_hat)
     i = 1
 
     while again(i, repr_val, repr_sol):
         # Next Generation
-        pop = np.array([new_generation(mean_hat, cov_hat) for i in range(n_pop)])
+        pop = np.array([neighb(params_neigh) for i in range(n_pop)])
         scores = np.array(list(map(func, pop)))
 
         # Select best individuals
@@ -101,8 +105,9 @@ def stochastic_heuristic(func, init, neighb, again, n_pop=100, n_select=10, new_
         repr_sol = best_sol[0]
 
         # Prepare next generation
-        mean_hat = np.mean(best_sol)
+        mean_hat = (1 / n_select) * sum(best_sol)
         cov_hat = np.cov(best_sol)
+        params_neigh = (mean_hat, cov_hat)
 
         i += 1
     return repr_val, repr_sol

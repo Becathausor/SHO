@@ -45,8 +45,12 @@ def rand(dim, scale):
     return np.random.random(dim) * scale
 
 
-def gaussian(mean, cov):
+def gaussian(params, test=False, dim=None, scale=None):
     """Draw a random vector according to a gaussian model"""
+    mean, cov = params
+    if test:
+        print(f"mean: {mean.shape}")
+        print(f"covariance: {cov.shape}")
     return np.random.multivariate_normal(mean, cov)
 
 
