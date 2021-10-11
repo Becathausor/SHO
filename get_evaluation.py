@@ -54,3 +54,4 @@ def create_evaluation(n_runs, method_name="num_annealing"):
     for k in range(n_runs):
         exec(open('snp.py').read())
     return None
+
