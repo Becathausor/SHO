@@ -2,6 +2,7 @@
 import math
 import numpy as np
 import matplotlib.pyplot as plt
+import get_evaluation
 
 from sho import make, algo, iters, plot, num, bit, pb
 
@@ -9,7 +10,9 @@ from sho import make, algo, iters, plot, num, bit, pb
 # Interface
 ########################################################################
 
-if __name__ == "__main__":
+
+if __name__ == "__main__" or __name__ == "get_evaluation":
+
     import argparse
 
     # Dimension of the search space.
@@ -33,7 +36,7 @@ if __name__ == "__main__":
                      help="Random pseudo-generator seed (none for current epoch)")
 
     solvers = ["num_greedy", "bit_greedy", "num_annealing", "bit_annealing", "num_stochastic", "bit_stochastic"]
-    can.add_argument("-m", "--solver", metavar="NAME", choices=solvers, default="num_greedy",
+    can.add_argument("-m", "--solver", metavar="NAME", choices=solvers, default="num_annealing",
                      help="Solver to use, among: " + ", ".join(solvers))
 
     can.add_argument("-t", "--target", metavar="VAL", default=30 * 30, type=float,
@@ -183,34 +186,42 @@ if __name__ == "__main__":
         # sensors = bit.to_sensors(sol)
 
     # Fancy output.
-    print("\nQuality {} : {}".format(val, sensors))
+    if __name__ == "__main__":
+        print("\nQuality {} \nSensors {}".format(val, sensors))
 
     shape = (the.domain_width, the.domain_width)
-    print(make.cost)
-    fig = plt.figure()
 
-    if the.nb_sensors == 1 and the.domain_width <= 50:
-        ax1 = fig.add_subplot(121, projection='3d')
-        ax2 = fig.add_subplot(122)
+    if __name__ == "__main__":
+        print(make.cost)
+        fig = plt.figure()
 
-        f = make.func(num.cover_sum,
-                      domain_width=the.domain_width,
-                      sensor_range=the.sensor_range * the.domain_width)
-        plot.surface(ax1, shape, f)
-        plot.path(ax1, shape, history)
-    else:
-        ax2 = fig.add_subplot(111)
+        if the.nb_sensors == 1 and the.domain_width <= 50:
+            ax1 = fig.add_subplot(121, projection='3d')
+            ax2 = fig.add_subplot(122)
 
-    domain = np.zeros(shape)
-    domain = pb.coverage(domain, sensors,
-                         the.sensor_range * the.domain_width)
-    domain = plot.highlight_sensors(domain, sensors)
-    ax2.imshow(domain)
-    plt.title(the.solver)
-    plt.show()
+            f = make.func(num.cover_sum,
+                          domain_width=the.domain_width,
+                          sensor_range=the.sensor_range * the.domain_width)
+            plot.surface(ax1, shape, f)
+            plot.path(ax1, shape, history)
+        else:
+            ax2 = fig.add_subplot(111)
 
-    plt.plot( val)
-    plt.xlabel("Iteration cost")
-    plt.ylabel("Quality")
-    plt.title(the.solver)
-    plt.show()
+        domain = np.zeros(shape)
+        domain = pb.coverage(domain, sensors,
+                             the.sensor_range * the.domain_width)
+        domain = plot.highlight_sensors(domain, sensors)
+        ax2.imshow(domain)
+        plt.title(the.solver)
+        plt.show()
+
+    # TODO: update cost definition
+    costs = list(range(len(val)))
+    if __name__ == "__main__":
+        plt.plot(val)
+        plt.xlabel("Iteration cost")
+        plt.ylabel("Quality")
+        plt.title(the.solver)
+        plt.show()
+
+    get_evaluation.evaluation_run(costs, val, the.solver)
