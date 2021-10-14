@@ -35,8 +35,8 @@ def get_data(method_name):
         run_i = run_i.split(" ")
         run_i = list(map(eval, run_i[:-1]))
 
-        costs = [run_i[k] for k in range(len(run_i)) if k % 2 == 0]
-        qualities = [run_i[k] for k in range(len(run_i)) if k % 2 == 1]
+        costs = [run_i[k] for k, _ in enumerate(run_i) if k % 2 == 0]
+        qualities = [run_i[k] for k, _ in enumerate(run_i) if k % 2 == 1]
         data.append((costs, qualities))
 
         run_i = file.readline()
@@ -45,7 +45,7 @@ def get_data(method_name):
 
 
 def to_file(method_name):
-    return method_name + ".txt"
+    return "".join([method_name, ".txt"])
 
 
 # TODO: Trouver un moyen de choisir la méthode d'exécution avec exec (ou autre)
