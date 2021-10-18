@@ -79,11 +79,11 @@ def create_eah(runs, nb_steps_costs=10, nb_steps_quality=10):
 
             # Update of the run_eah
             for i in range(quality_ind):
-                for j in range(cost_ind):
+                for j in range(cost_ind, nb_steps_costs):
                     eah_run[i, j] = 1
 
         eah += eah_run
-    eah = np.abs(eah - np.max(eah))
+    # eah = np.abs(eah - np.max(eah))
     return eah
 
 

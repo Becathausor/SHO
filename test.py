@@ -15,5 +15,5 @@ if __name__ == "__main__":
 
     eah = evaluation_representation.create_eah(runs, RESOLUTION, RESOLUTION)
     evaluation_representation.plot_eah(eah, title=METHOD_NAME + "_eah")
-    print(eah)
+
 
