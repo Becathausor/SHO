@@ -124,12 +124,33 @@ def stochastic_heuristic(func, init, neighb, again, n_pop=100, n_select=10, new_
         i += 1
     return repr_val, repr_sol
 
+
 ########################################################################
 # Additional functions
 ########################################################################
 
 
+def find(L, elem):
+
+
 def argmax_k(list_iter: np.ndarray, k: int):
+    """
+    Compute the indices of the k highest elements of the list l.
+    :param list_iter: list
+    :param k: int
+    :return: bests_ind: list
+    """
+    list_sorted = list_iter.copy()
+    sorted(list_sorted)
+    goods = list_sorted[-k:]
+    bests_ind = []
+    for ind, elem in enumerate(list_iter):
+        if elem in goods:
+            bests_ind.append(ind)
+    return bests_ind
+
+
+def argmax_k_old(list_iter: np.ndarray, k: int):
     """
     Compute the indices of the k highest elements of the list l.
     :param list_iter: list

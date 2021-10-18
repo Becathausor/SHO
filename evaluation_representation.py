@@ -2,13 +2,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def context_plot(plotter, *args, **kwargs):
+def context_plot(plotter):
 
-    def wrapped(*args, title="", **kwargs):
-        plotter(*args, **kwargs)
+    def wrapped(*args, **kwargs):
+        plotter(*args)
         plt.xlabel("Budget")
         plt.ylabel("Quality")
-        plt.title(title)
+        plt.title(kwargs["title"])
         plt.show()
         return None
 
@@ -16,7 +16,7 @@ def context_plot(plotter, *args, **kwargs):
 
 
 @context_plot
-def plot_runs(runs, title):
+def plot_runs(runs):
     """
     Plot every runs on the same figure
     """
@@ -33,16 +33,23 @@ def plot_eah(eah):
 def create_eah(runs, nb_steps_costs=10, nb_steps_quality=10):
     eah = np.zeros((nb_steps_costs, nb_steps_quality))
 
+    cost_min = min([min(run[0]) for run in runs])
     cost_max = max([max(run[0]) for run in runs])
     quality_min = min([min(run[1]) for run in runs])
     quality_max = max([max(run[1]) for run in runs])
 
     def get_ind_cost(cost):
-        step = cost_max * 1.5 / nb_steps_costs
+        """
+        Computes the index of eah corresponding to the cost
+        """
+        step = (cost_max - cost_min) * 1.5 / nb_steps_costs
         ind = cost // step
         return ind
 
     def get_ind_quality(quality):
+        """
+        Computes the index of eah corresponding to the quality
+        """
         step = (quality_max - quality_min) * 1.5 / nb_steps_costs
         ind = quality // step
         return ind

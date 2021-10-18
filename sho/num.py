@@ -72,10 +72,10 @@ def neighb_square(sol, scale, domain_width):
 ########################################################################
 
 
-def reparation(X, maxi, mini=0):
-    Y = (X - maxi) * ((X - maxi) <= 0) + maxi
-    Y = (Y + mini) * ((Y + mini) >= 0) - mini
-    return Y
+def reparation(x, maxi, mini=0):
+    y = (x - maxi) * ((x - maxi) <= 0) + maxi
+    y = (y + mini) * ((y + mini) >= 0) - mini
+    return y
 
 
 def penalization(x, x_repaired, method="Mean_Square"):

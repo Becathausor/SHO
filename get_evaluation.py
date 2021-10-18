@@ -35,8 +35,8 @@ def get_data(method_name):
         run_i = run_i.split(" ")
         run_i = list(map(eval, run_i[:-1]))
 
-        costs = [run_i[k] for k, _ in enumerate(run_i) if k % 2 == 0]
-        qualities = [run_i[k] for k, _ in enumerate(run_i) if k % 2 == 1]
+        costs = [cost for k, cost in enumerate(run_i) if k % 2 == 0]
+        qualities = [quality for k, quality in enumerate(run_i) if k % 2 == 1]
         data.append((costs, qualities))
 
         run_i = file.readline()
