@@ -213,12 +213,14 @@ if __name__ == "__main__" or __name__ == "get_evaluation":
 
 
         # TODO: update cost definition
-        costs = list(range(len(val)))
+
         plt.plot(val)
         plt.xlabel("Iteration cost")
         plt.ylabel("Quality")
         plt.title(the.solver)
         plt.show()
+
+    costs = list(range(len(val)))
 
     get_evaluation.evaluation_run(costs, val, the.solver)
 
