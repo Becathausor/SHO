@@ -3,34 +3,7 @@ import matplotlib.pyplot as plt
 from time import sleep
 
 
-def context_plot(plotter):
-    def wrapped(*args, **kwargs):
-        plotter(*args)
-        plt.xlabel("Budget")
-        plt.ylabel("Quality")
-        plt.title(kwargs["title"])
-        plt.show()
-        return None
-
-    return wrapped
-
-
-@context_plot
-def plot_runs(runs):
-    """
-    Plot every runs on the same figure
-    """
-    for run in runs:
-        costs, qualities = run
-        plt.plot(costs, qualities)
-
-
-@context_plot
-def plot_eah(eah):
-    plt.imshow(eah, cmap="Oranges", origin="lower")
-
-
-def create_eah(runs, nb_steps_costs=10, nb_steps_quality=10):
+def create_eah(runs, nb_steps_costs=10, nb_steps_quality=10, reverse_eah=False):
     eah = np.zeros((nb_steps_costs, nb_steps_quality))
 
     # Cost borders
@@ -48,7 +21,7 @@ def create_eah(runs, nb_steps_costs=10, nb_steps_quality=10):
         step = (cost_max - cost_min) / (nb_steps_costs - 1)
         ind = (cost - cost_min) // step
 
-        print(f"Cost index: {ind}")
+        # print(f"Cost index: {ind}")
         if ind >= nb_steps_costs:
             print(cost)
             print(cost_max)
@@ -63,7 +36,7 @@ def create_eah(runs, nb_steps_costs=10, nb_steps_quality=10):
         step = (quality_max - quality_min) / (nb_steps_quality - 1)
         ind = (quality - quality_min) // step
 
-        print(f"Quality index: {ind}")
+        # print(f"Quality index: {ind}")
         if ind >= nb_steps_quality:
             raise Exception("Error step definition of Quality")
 
@@ -83,10 +56,45 @@ def create_eah(runs, nb_steps_costs=10, nb_steps_quality=10):
                     eah_run[i, j] = 1
 
         eah += eah_run
-    # eah = np.abs(eah - np.max(eah))
+    if reverse_eah:
+        eah = np.abs(eah - np.max(eah))
     return eah
 
 
-def create_eaf(runs, title):
-    # TODO: To be implemented
-    raise NotImplementedError
+def create_ert(runs, delta):
+
+    cost_max = max([len(run[0]) for run in runs])
+    ert_tranche = np.zeros(int(cost_max))
+
+    n = len(runs)
+
+    for run in runs:
+        costs, qualities = run
+        ert_run = np.array(list(map(lambda x: x > delta, qualities)))
+        if len(ert_run) < cost_max:
+            ert__run = np.zeros(int(cost_max))
+
+            # Rallongement de la liste
+            ert__run[:len(ert_run)] = ert_run
+            ert__run[len(ert_run):] = ert_run[-1]
+            ert_run = ert__run
+
+        # Ajout des échantillons bien trouvés
+        ert_tranche += ert_run
+    ert_tranche /= n
+    return ert_tranche
+
+
+def create_eaf(runs, nb_steps_probability=10):
+    quality_min = min([min(run[1]) for run in runs])
+    quality_max = max([max(run[1]) for run in runs])
+
+    deltas = np.linspace(quality_min, quality_max, nb_steps_probability)
+    eaf = np.array(list(map(lambda d: create_ert(runs, d), deltas)))
+    costs = np.arange(len(eaf[0]))
+    qualities = deltas
+
+    x, y = np.meshgrid(costs, qualities)
+
+    return x, y, eaf
+

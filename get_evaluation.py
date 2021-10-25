@@ -1,3 +1,4 @@
+import os
 
 def evaluation_run(times, qualities, method_name):
     """
@@ -48,10 +49,10 @@ def to_file(method_name):
     return "".join([method_name, ".txt"])
 
 
-# TODO: Trouver un moyen de choisir la méthode d'exécution avec exec (ou autre)
 def create_evaluation(n_runs, method_name="num_annealing"):
     clear_method(method_name)
     for k in range(n_runs):
+        # os.system("python snp.py --solver {}".format(method_name))
         exec(open('snp.py').read())
     return None
 

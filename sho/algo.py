@@ -46,7 +46,7 @@ def simu_annealing(func, init, neighb, again, T_init=2, alpha=0.5, beta=2, evalu
     T = T_init
     i = 1
     if evaluation:
-        L_val = []
+        L_val = [best_val]
 
     # Fonction de recui simulé
     def test_recui(f0, f1, t_instant):
@@ -76,6 +76,51 @@ def simu_annealing(func, init, neighb, again, T_init=2, alpha=0.5, beta=2, evalu
     return best_val, best_sol
 
 
+def genetical_population(func, init, neighb, again, pop_size=15, selection_size=5):
+    """Population-based stochastic heuristic template"""
+    pop = [init() for k in range(pop_size)]
+    pop_val = [func(individual) for individual in pop]
+    idx = np.argmax(np.array(pop_val))
+    best_val, best_sol = pop_val[idx], pop[idx]
+    val,sol = best_val,best_sol
+    i = 1
+    while again(i, best_val, best_sol):
+
+        ## SELECTION ##
+        """
+        Below, I randomly select k individuals among the population (where k is the selection size).
+        """
+        total_val = np.sum(pop_val)
+        indices = np.random.choice(len(pop), selection_size, replace=False, p=[(pop_val[j]/total_val) for j in range(len(pop_val))])
+        selected_population = np.array(pop)[indices]
+        selected_population = list(selected_population)
+
+        ## MUTATION ##
+        """
+        Here, I choose a close neighbor of each selected individuals.
+        I have decided to do only a mutation (so no crossover) as I have good results and that the execution is already 
+        pretty long (30s to 1min, depending on chosen parameters).
+        """
+        mutation_population = [neighb(individual) for individual in selected_population]
+
+        ## REPLACEMENT AND FITNESS ##
+        pop += mutation_population                                       #I add the mutated population to the population
+        pop_val = [func(individual) for individual in pop]               #I apply the function to each of them and then sort them.
+        index_order = sorted(range(len(pop_val)), key = lambda k:pop_val[k])
+        pop = [pop[i] for i in index_order]
+        pop_val = [pop_val[i] for i in index_order]
+        pop = pop[selection_size:]                                #I remove the k less worst individuals
+        pop_val = pop_val[selection_size:]
+
+
+        idx = np.argmax(np.array(pop_val))
+        val, sol = pop_val[idx], pop[idx]
+        if val > best_val :
+            best_val, best_sol = val, sol
+        i += 1
+    return best_val, best_sol
+
+
 def stochastic_heuristic(func, init, neighb, again, n_pop=100, n_select=10, new_generation=num.gaussian):
     """Iterative randomized greedy heuristic template."""
 
@@ -96,13 +141,13 @@ def stochastic_heuristic(func, init, neighb, again, n_pop=100, n_select=10, new_
     print(f"best_sol: {best_sol.shape}")
     mean_hat = (1 / n_select) * sum(best_sol)
     best_sol_bar = best_sol - mean_hat
-    cov_hat = (1 / n_select) * np.sum(np.dot(sol, sol.T) for sol in best_sol_bar)
+    print(f"best_sol_bar.shape: {best_sol_bar.shape}")
+    cov_hat = (1 / n_select) * np.sum([np.dot(sol, sol.T) for sol in best_sol_bar], axis=1)
     params_neigh = (mean_hat, cov_hat)
     i = 1
 
     while again(i, repr_val, repr_sol):
         # Next Generation
-        raise NotImplementedError
         pop = np.array([neighb(params_neigh) for i in range(n_pop)])
 
         scores = np.array(list(map(func, pop)))
@@ -130,27 +175,7 @@ def stochastic_heuristic(func, init, neighb, again, n_pop=100, n_select=10, new_
 ########################################################################
 
 
-def find(L, elem):
-
-
 def argmax_k(list_iter: np.ndarray, k: int):
-    """
-    Compute the indices of the k highest elements of the list l.
-    :param list_iter: list
-    :param k: int
-    :return: bests_ind: list
-    """
-    list_sorted = list_iter.copy()
-    sorted(list_sorted)
-    goods = list_sorted[-k:]
-    bests_ind = []
-    for ind, elem in enumerate(list_iter):
-        if elem in goods:
-            bests_ind.append(ind)
-    return bests_ind
-
-
-def argmax_k_old(list_iter: np.ndarray, k: int):
     """
     Compute the indices of the k highest elements of the list l.
     :param list_iter: list

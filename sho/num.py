@@ -45,7 +45,7 @@ def rand(dim, scale):
     return np.random.random(dim) * scale
 
 
-def gaussian(params, test=False, dim=None, scale=None):
+def gaussian(params, test=True, dim=None, scale=None):
     """Draw a random vector according to a gaussian model"""
     mean, cov = params
     if test:
@@ -78,8 +78,8 @@ def reparation(x, maxi, mini=0):
     return y
 
 
-def penalization(x, x_repaired, method="Mean_Square"):
-    if method == "Mean_Square":
+def penalization(x, x_repaired, method="Ridge"):
+    if method == "Ridge":
         loss = np.sum((x - x_repaired) ** 2)
     elif method == "Lasso":
         loss = np.sum(np.abs(x - x_repaired))

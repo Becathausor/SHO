@@ -35,7 +35,7 @@ if __name__ == "__main__" or __name__ == "get_evaluation":
     can.add_argument("-s", "--seed", metavar="VAL", default=None, type=int,
                      help="Random pseudo-generator seed (none for current epoch)")
 
-    solvers = ["num_greedy", "bit_greedy", "num_annealing", "bit_annealing", "num_stochastic", "bit_stochastic"]
+    solvers = ["num_greedy", "bit_greedy", "num_annealing", "bit_annealing", "num_stochastic", "bit_stochastic", "num_genetical", "bit_genetical"]
     can.add_argument("-m", "--solver", metavar="NAME", choices=solvers, default="num_annealing",
                      help="Solver to use, among: " + ", ".join(solvers))
 
@@ -154,6 +154,22 @@ if __name__ == "__main__" or __name__ == "get_evaluation":
             iters
         )
         sensors = bit.to_sensors(sol)
+
+    elif the.solver == "num_genetical":
+        val, sol = algo.genetical_population(
+            make.func(num.cover_sum,
+                      domain_width=the.domain_width,
+                      sensor_range=the.sensor_range,
+                      dim=d * the.nb_sensors),
+            make.init(num.rand,
+                      dim=d * the.nb_sensors,
+                      scale=the.domain_width),
+            make.neig(num.neighb_square,
+                      scale=the.variation_scale,
+                      domain_width=the.domain_width),
+            iters
+        )
+        sensors = num.to_sensors(sol)
 
     elif the.solver == "num_stochastic":
         val, sol = algo.stochastic_heuristic(
