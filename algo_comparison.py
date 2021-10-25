@@ -1,4 +1,3 @@
-import numpy as np
 import matplotlib.pyplot as plt
 import evaluation_representation as evaluation
 import plot_evaluation
@@ -15,7 +14,7 @@ def get_list_runs(method_names, nb_runs=10, deltas=(600, 660, 675)):
             # Runs for evaluation of a method
             get_evaluation.clear_method(method_name)
             for k in range(nb_runs):
-                os.system("python snp.py -p False --solver {}".format(method_name))
+                os.system("python snp.py --solver {}".format(method_name))
 
             # get_data from our runs
             runs = get_evaluation.get_data(method_name)
@@ -29,9 +28,10 @@ def get_list_runs(method_names, nb_runs=10, deltas=(600, 660, 675)):
 def compare_ert(method_names, nb_runs=10, deltas=(600, 660, 675)):
     list_runs = get_list_runs(method_names, nb_runs=10, deltas=(600, 660, 675))
 
-    list_ert = [[evaluation.create_ert(runs, delta) for runs in list_runs] for delta in deltas]
+    list_ert = [[evaluation.create_ert(runs, delta) for runs in list_runs[ind]] for ind, delta in enumerate(deltas)]
     for ind_delta, delta in enumerate(deltas):
-        for ind_method, ert in enumerate(method_names):
-            plt.plot(list_ert[ind_delta][ind_method], label=f"{method_names}: delta = {delta}")
+        for ind_method, method_name in enumerate(method_names):
+            plt.plot(list_ert[ind_delta][ind_method], label=f"{method_name}: delta = {delta}")
+            plt.legend()
 
     return list_ert
