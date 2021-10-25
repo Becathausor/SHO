@@ -4,11 +4,13 @@ from time import sleep
 
 
 def context_plot(plotter):
-    def wrapped(*args, x_label="Budget", y_label="Quality", title="", **kwargs):
+    def wrapped(*args, x_label="Budget", y_label="Quality", title="", name_save="", **kwargs):
         plotter(*args, **kwargs)
         plt.xlabel(x_label)
         plt.ylabel(y_label)
         plt.title(title)
+        if name_save:
+            plt.savefig(name_save)
         plt.show()
         return None
 
