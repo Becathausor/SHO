@@ -10,7 +10,7 @@ def context_plot(plotter):
         plt.ylabel(y_label)
         plt.title(title)
         if name_save:
-            plt.savefig(name_save)
+            plt.savefig(f"images_evaluation\\{name_save}")
         plt.show()
         return None
 
