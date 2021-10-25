@@ -35,7 +35,10 @@ if __name__ == "__main__" or __name__ == "get_evaluation":
     can.add_argument("-s", "--seed", metavar="VAL", default=None, type=int,
                      help="Random pseudo-generator seed (none for current epoch)")
 
-    solvers = ["num_greedy", "bit_greedy", "num_annealing", "bit_annealing", "num_stochastic", "bit_stochastic", "num_genetical", "bit_genetical"]
+    solvers = ["num_greedy", "bit_greedy",
+               "num_annealing", "bit_annealing",
+               "num_stochastic", "bit_stochastic",
+               "num_genetical", "bit_genetical"]
     can.add_argument("-m", "--solver", metavar="NAME", choices=solvers, default="num_annealing",
                      help="Solver to use, among: " + ", ".join(solvers))
 
@@ -51,7 +54,7 @@ if __name__ == "__main__" or __name__ == "get_evaluation":
     can.add_argument("-a", "--variation-scale", metavar="RATIO", default=0.3, type=float,
                      help="Scale of the variation operators (as a ration of the domain width)")
 
-    can.add_argument("-p", "--plot", metavar="PLOT", default=True, type=bool,
+    can.add_argument("-p", "--plot", metavar="PLOT", default=False, type=bool,
                      help="Plots the sensors and the optimization curve")
 
     the = can.parse_args()
@@ -174,43 +177,16 @@ if __name__ == "__main__" or __name__ == "get_evaluation":
         )
         sensors = num.to_sensors(sol)
 
-    elif the.solver == "num_stochastic":
-        val, sol = algo.stochastic_heuristic(
-            make.func(num.cover_sum,
-                      domain_width=the.domain_width,
-                      sensor_range=the.sensor_range,
-                      dim=d * the.nb_sensors),
-            make.init(num.rand,
-                      dim=d * the.nb_sensors,
-                      scale=the.domain_width),
-            make.neig(num.gaussian, test=True),
-            iters
-        )
-
-    elif the.solver == "bit_stochastic":
+    else:
         raise NotImplementedError
-        # val, sol = algo.stochastic_heuristic(
-        #     make.func(bit.cover_sum,
-        #               domain_width=the.domain_width,
-        #               sensor_range=the.sensor_range,
-        #               dim=d * the.nb_sensors),
-        #     make.init(bit.rand,
-        #               domain_width=the.domain_width,
-        #               nb_sensors=the.nb_sensors),
-        #     make.neig(bit.neighb_square,
-        #               scale=the.variation_scale,
-        #               domain_width=the.domain_width),
-        #     iters
-        # )
-        # sensors = bit.to_sensors(sol)
 
     # Fancy output.
-    if __name__ == "__main__" and the.plot:
+    if the.plot:
         print("\nQuality {} \nSensors {}".format(val, sensors))
 
-    shape = (the.domain_width, the.domain_width)
+        shape = (the.domain_width, the.domain_width)
 
-    if __name__ == "__main__" and the.plot:
+
         print(make.cost)
         fig = plt.figure()
 
@@ -234,9 +210,10 @@ if __name__ == "__main__" or __name__ == "get_evaluation":
         plt.title(the.solver)
         plt.show()
 
-    # TODO: update cost definition
-    costs = list(range(len(val)))
-    if __name__ == "__main__" and the.plot:
+
+
+        # TODO: update cost definition
+        costs = list(range(len(val)))
         plt.plot(val)
         plt.xlabel("Iteration cost")
         plt.ylabel("Quality")
@@ -244,3 +221,4 @@ if __name__ == "__main__" or __name__ == "get_evaluation":
         plt.show()
 
     get_evaluation.evaluation_run(costs, val, the.solver)
+
