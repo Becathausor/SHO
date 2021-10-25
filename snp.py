@@ -177,6 +177,22 @@ if __name__ == "__main__" or __name__ == "get_evaluation":
         )
         sensors = num.to_sensors(sol)
 
+    elif the.solver == "bit_genetical":
+        val, sol = algo.genetical_population(
+            make.func(bit.cover_sum,
+                      domain_width=the.domain_width,
+                      sensor_range=the.sensor_range,
+                      dim=d * the.nb_sensors),
+            make.init(bit.rand,
+                      domain_width=the.domain_width,
+                      nb_sensors=the.nb_sensors),
+            make.neig(bit.neighb_square,
+                      scale=the.variation_scale,
+                      domain_width=the.domain_width),
+            iters
+        )
+        sensors = bit.to_sensors(sol)
+
     else:
         raise NotImplementedError
 
@@ -209,8 +225,6 @@ if __name__ == "__main__" or __name__ == "get_evaluation":
         ax2.imshow(domain)
         plt.title(the.solver)
         plt.show()
-
-
 
         # TODO: update cost definition
 

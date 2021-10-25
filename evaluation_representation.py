@@ -1,6 +1,5 @@
 import numpy as np
-import matplotlib.pyplot as plt
-from time import sleep
+
 
 
 def create_eah(runs, nb_steps_costs=10, nb_steps_quality=10, reverse_eah=False):
