@@ -1,5 +1,6 @@
 import os
 
+
 def evaluation_run(times, qualities, method_name):
     """
     Register the results of cost and quality over one run
