@@ -97,4 +97,3 @@ def create_eaf(runs, nb_steps_probability=10):
     x, y = np.meshgrid(costs, qualities)
 
     return x, y, eaf
-
