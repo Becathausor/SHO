@@ -38,7 +38,7 @@ def greedy(func, init, neighb, again):
     return best_val, best_sol
 
 
-def simu_annealing(func, init, neighb, again, T_init=2, alpha=0.5, beta=2, evaluation=True):
+def simu_annealing(func, init, neighb, again, T_init=2000, alpha=50, beta=1.1, evaluation=True):
     """Iterative randomized greedy heuristic template."""
     best_sol = init()
     best_val = func(best_sol)
@@ -50,6 +50,13 @@ def simu_annealing(func, init, neighb, again, T_init=2, alpha=0.5, beta=2, evalu
 
     # Fonction de recui simulé
     def test_recui(f0, f1, t_instant):
+        """
+        print(f"numérateur: {-(f1 - f0)}")
+        print(f"dénominateur: {t_instant}")
+        print(f"exponentielle: {np.exp(-(f1 - f0) / t_instant)}")
+        print(f"bien calculé")
+        print(f"\n")
+        """
         return np.exp(-(f1 - f0) / t_instant) < alpha
 
     while again(i, best_val, best_sol):
@@ -62,6 +69,7 @@ def simu_annealing(func, init, neighb, again, T_init=2, alpha=0.5, beta=2, evalu
             best_sol = sol
 
         elif test_recui(best_val, val, T):
+            # print("Recuisson")
             best_val, best_sol = val, sol
 
         if evaluation:
