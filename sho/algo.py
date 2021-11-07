@@ -87,35 +87,30 @@ def genetical_population(func, init, neighb, again, pop_size=15, selection_size=
     while again(i, best_val, best_sol):
 
         ## SELECTION ##
-        """
-        Below, I randomly select k individuals among the population (where k is the selection size).
-        """
+        # Random selection of k individuals in population
         total_val = np.sum(pop_val)
         indices = np.random.choice(len(pop), selection_size, replace=False, p=[(pop_val[j]/total_val) for j in range(len(pop_val))])
         selected_population = np.array(pop)[indices]
         selected_population = list(selected_population)
 
         ## MUTATION ##
-        """
-        Here, I choose a close neighbor of each selected individuals.
-        I have decided to do only a mutation (so no crossover) as I have good results and that the execution is already 
-        pretty long (30s to 1min, depending on chosen parameters).
-        """
+        # Selection of close neighbors for each individual
+        # TODO: Crossover to be implemented
         mutation_population = [neighb(individual) for individual in selected_population]
 
         ## REPLACEMENT AND FITNESS ##
-        pop += mutation_population                                       #I add the mutated population to the population
-        pop_val = [func(individual) for individual in pop]               #I apply the function to each of them and then sort them.
-        index_order = sorted(range(len(pop_val)), key = lambda k:pop_val[k])
+        pop += mutation_population                                       # Adds the mutated population to the population
+        pop_val = [func(individual) for individual in pop]               # Applies the function to each of them and then sort them.
+        index_order = sorted(range(len(pop_val)), key=lambda k: pop_val[k])
         pop = [pop[i] for i in index_order]
         pop_val = [pop_val[i] for i in index_order]
-        pop = pop[selection_size:]                                #I remove the k less worst individuals
+        pop = pop[selection_size:]                                # Removes the k less worst individuals
         pop_val = pop_val[selection_size:]
 
-
+        # Keeping track of the best elements for evaluation
         idx = np.argmax(np.array(pop_val))
         val, sol = pop_val[idx], pop[idx]
-        if val > best_val :
+        if val > best_val:
             best_val, best_sol = val, sol
         i += 1
     return best_val, best_sol
@@ -175,20 +170,12 @@ def stochastic_heuristic(func, init, neighb, again, n_pop=100, n_select=10, new_
 ########################################################################
 
 
-def argmax_k(list_iter: np.ndarray, k: int):
+def argmax_k(list_iter: np.ndarray, k: int, new=True):
     """
     Compute the indices of the k highest elements of the list l.
     :param list_iter: list
     :param k: int
     :return: bests_ind: list
     """
-    l_ = list_iter.copy()
-    bests_ind = []
-    mini = min(l_) - 1
-    for i in range(k):
-        if i >= len(l_):
-            return bests_ind
-        ind = np.argmax(l_)
-        bests_ind.append(ind)
-        l_[ind] = mini
-    return bests_ind
+    return sorted(range(len(list_iter)), key=lambda index: list_iter[index])
+
