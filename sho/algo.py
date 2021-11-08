@@ -21,12 +21,14 @@ def random(func, init, again):
     return best_val, best_sol
 
 
-def greedy(func, init, neighb, again):
+def greedy(func, init, neighb, again, evaluation=False):
     """Iterative randomized greedy heuristic template."""
     best_sol = init()
     best_val = func(best_sol)
     val, sol = best_val, best_sol
     i = 1
+    if evaluation:
+        L_val = []
     while again(i, best_val, best_sol):
         sol = neighb(best_sol)
         val = func(sol)
@@ -35,10 +37,14 @@ def greedy(func, init, neighb, again):
             best_val = val
             best_sol = sol
         i += 1
+        if evaluation:
+            L_val.append(best_val)
+    if evaluation:
+        return L_val, best_sol
     return best_val, best_sol
 
 
-def simu_annealing(func, init, neighb, again, T_init=2000, alpha=50, beta=1.1, evaluation=True):
+def simu_annealing(func, init, neighb, again, T_init=200, alpha=5, beta=1.1, evaluation=False):
     """Iterative randomized greedy heuristic template."""
     best_sol = init()
     best_val = func(best_sol)
@@ -49,7 +55,7 @@ def simu_annealing(func, init, neighb, again, T_init=2000, alpha=50, beta=1.1, e
         L_val = [best_val]
 
     # Fonction de recui simulé
-    def test_recui(f0, f1, t_instant):
+    def test_recui(worse, best, t_instant):
         """
         print(f"numérateur: {-(f1 - f0)}")
         print(f"dénominateur: {t_instant}")
@@ -57,7 +63,7 @@ def simu_annealing(func, init, neighb, again, T_init=2000, alpha=50, beta=1.1, e
         print(f"bien calculé")
         print(f"\n")
         """
-        return np.exp(-(f1 - f0) / t_instant) < alpha
+        return np.exp(-(worse - best) / t_instant) < alpha
 
     while again(i, best_val, best_sol):
         # Mise à jour de la bonne solution
@@ -68,8 +74,8 @@ def simu_annealing(func, init, neighb, again, T_init=2000, alpha=50, beta=1.1, e
             best_val = val
             best_sol = sol
 
-        elif test_recui(best_val, val, T):
-            # print("Recuisson")
+        elif test_recui(val, best_val, T):
+            # print("RECUISSON !!!!!!")
             best_val, best_sol = val, sol
 
         if evaluation:
@@ -84,20 +90,23 @@ def simu_annealing(func, init, neighb, again, T_init=2000, alpha=50, beta=1.1, e
     return best_val, best_sol
 
 
-def genetical_population(func, init, neighb, again, pop_size=15, selection_size=5):
+def genetical_population(func, init, neighb, again, pop_size=15, selection_size=5, evaluation=False):
     """Population-based stochastic heuristic template"""
     pop = [init() for k in range(pop_size)]
     pop_val = [func(individual) for individual in pop]
     idx = np.argmax(np.array(pop_val))
     best_val, best_sol = pop_val[idx], pop[idx]
-    val,sol = best_val,best_sol
+    val, sol = best_val, best_sol
     i = 1
+    if evaluation:
+        L_val = []
     while again(i, best_val, best_sol):
 
         ## SELECTION ##
         # Random selection of k individuals in population
         total_val = np.sum(pop_val)
-        indices = np.random.choice(len(pop), selection_size, replace=False, p=[(pop_val[j]/total_val) for j in range(len(pop_val))])
+        indices = np.random.choice(len(pop), selection_size, replace=False,
+                                   p=[(pop_val[j] / total_val) for j in range(len(pop_val))])
         selected_population = np.array(pop)[indices]
         selected_population = list(selected_population)
 
@@ -107,12 +116,12 @@ def genetical_population(func, init, neighb, again, pop_size=15, selection_size=
         mutation_population = [neighb(individual) for individual in selected_population]
 
         ## REPLACEMENT AND FITNESS ##
-        pop += mutation_population                                       # Adds the mutated population to the population
-        pop_val = [func(individual) for individual in pop]               # Applies the function to each of them and then sort them.
+        pop += mutation_population  # Adds the mutated population to the population
+        pop_val = [func(individual) for individual in pop]  # Applies the function to each of them and then sort them.
         index_order = sorted(range(len(pop_val)), key=lambda k: pop_val[k])
         pop = [pop[i] for i in index_order]
         pop_val = [pop_val[i] for i in index_order]
-        pop = pop[selection_size:]                                # Removes the k less worst individuals
+        pop = pop[selection_size:]  # Removes the k less worst individuals
         pop_val = pop_val[selection_size:]
 
         # Keeping track of the best elements for evaluation
@@ -121,11 +130,18 @@ def genetical_population(func, init, neighb, again, pop_size=15, selection_size=
         if val > best_val:
             best_val, best_sol = val, sol
         i += 1
+        if evaluation:
+            L_val.append(best_val)
+
+    if evaluation:
+        return L_val, best_sol
     return best_val, best_sol
 
 
 def stochastic_heuristic(func, init, neighb, again, n_pop=100, n_select=10, new_generation=num.gaussian):
-    """Iterative randomized greedy heuristic template."""
+    """Iterative randomized greedy heuristic template.
+    NOT FINISHED
+    """
 
     # First Generation
     pop = np.array([init() for i in range(n_pop)])
@@ -186,4 +202,3 @@ def argmax_k(list_iter: np.ndarray, k: int, new=True):
     :return: bests_ind: list
     """
     return sorted(range(len(list_iter)), key=lambda index: list_iter[index])
-

@@ -1,7 +1,6 @@
 import numpy as np
 
 
-
 def create_eah(runs, nb_steps_costs=10, nb_steps_quality=10, reverse_eah=False):
     eah = np.zeros((nb_steps_costs, nb_steps_quality))
 

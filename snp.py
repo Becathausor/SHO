@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import get_evaluation
 
+
 from sho import make, algo, iters, plot, num, bit, pb
 
 ########################################################################
@@ -39,7 +40,7 @@ if __name__ == "__main__" or __name__ == "get_evaluation":
                "num_annealing", "bit_annealing",
                "num_stochastic", "bit_stochastic",
                "num_genetical", "bit_genetical"]
-    can.add_argument("-m", "--solver", metavar="NAME", choices=solvers, default="num_annealing",
+    can.add_argument("-m", "--solver", metavar="NAME", choices=solvers, default="num_genetical",
                      help="Solver to use, among: " + ", ".join(solvers))
 
     can.add_argument("-t", "--target", metavar="VAL", default=30 * 30, type=float,
@@ -54,8 +55,14 @@ if __name__ == "__main__" or __name__ == "get_evaluation":
     can.add_argument("-a", "--variation-scale", metavar="RATIO", default=0.3, type=float,
                      help="Scale of the variation operators (as a ration of the domain width)")
 
-    can.add_argument("-p", "--plot", metavar="PLOT", default=False, type=bool,
+    can.add_argument("-p", "--plot", metavar="PLOT", default=True, type=bool,
                      help="Plots the sensors and the optimization curve")
+
+    can.add_argument("--pop_size", metavar="POP_SIZE", default=15, type=int,
+                     help="Number of individuals in the living population")
+
+    can.add_argument("--evaluation", metavar="EVALUATION", default=False, type=bool,
+                     help="Indicates if we register the run as we designed it in test.py")
 
     the = can.parse_args()
 
@@ -125,7 +132,8 @@ if __name__ == "__main__" or __name__ == "get_evaluation":
             make.neig(bit.neighb_square,
                       scale=the.variation_scale,
                       domain_width=the.domain_width),
-            iters
+            iters,
+            evaluation=the.evaluation
         )
         sensors = bit.to_sensors(sol)
 
@@ -141,7 +149,8 @@ if __name__ == "__main__" or __name__ == "get_evaluation":
             make.neig(num.neighb_square,
                       scale=the.variation_scale,
                       domain_width=the.domain_width),
-            iters
+            iters,
+            evaluation=the.evaluation
         )
         sensors = num.to_sensors(sol)
 
@@ -157,7 +166,8 @@ if __name__ == "__main__" or __name__ == "get_evaluation":
             make.neig(bit.neighb_square,
                       scale=the.variation_scale,
                       domain_width=the.domain_width),
-            iters
+            iters,
+            evaluation=the.evaluation
         )
         sensors = bit.to_sensors(sol)
 
@@ -173,7 +183,9 @@ if __name__ == "__main__" or __name__ == "get_evaluation":
             make.neig(num.neighb_square,
                       scale=the.variation_scale,
                       domain_width=the.domain_width),
-            iters
+            iters,
+            pop_size=the.pop_size,
+            evaluation=the.evaluation
         )
         sensors = num.to_sensors(sol)
 
@@ -189,7 +201,9 @@ if __name__ == "__main__" or __name__ == "get_evaluation":
             make.neig(bit.neighb_square,
                       scale=the.variation_scale,
                       domain_width=the.domain_width),
-            iters
+            iters,
+            pop_size=the.pop_size,
+            evaluation=the.evaluation
         )
         sensors = bit.to_sensors(sol)
 
@@ -201,7 +215,6 @@ if __name__ == "__main__" or __name__ == "get_evaluation":
         print("\nQuality {} \nSensors {}".format(val, sensors))
 
         shape = (the.domain_width, the.domain_width)
-
 
         print(make.cost)
         fig = plt.figure()
@@ -226,15 +239,24 @@ if __name__ == "__main__" or __name__ == "get_evaluation":
         plt.title(the.solver)
         plt.show()
 
-        # TODO: update cost definition
-
         plt.plot(val)
         plt.xlabel("Iteration cost")
         plt.ylabel("Quality")
         plt.title(the.solver)
         plt.show()
 
-    costs = list(range(len(val)))
+    if the.evaluation:
+        assert isinstance(val, list), "not a list for the evolution of the runs"
+        if "annealing" in the.solver:
+            costs = list(range(len(val)))
 
-    get_evaluation.evaluation_run(costs, val, the.solver)
+        elif "greedy" in the.solver:
+            costs = list(range(len(val)))
 
+        elif "genetical" in the.solver:
+            costs = the.pop_size * np.array(list(range(len(val))))
+
+        else:
+            raise NotImplementedError
+
+        get_evaluation.evaluation_run(costs, val, the.solver)
