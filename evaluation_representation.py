@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def create_eah(runs, nb_steps_costs=10, nb_steps_quality=10, reverse_eah=False):
+def create_eaf(runs, nb_steps_costs=10, nb_steps_quality=10, reverse_eah=False):
     eah = np.zeros((nb_steps_costs, nb_steps_quality))
 
     # Cost borders
@@ -83,7 +83,7 @@ def create_ert(runs, delta):
     return ert_tranche
 
 
-def create_eaf(runs, nb_steps_probability=10):
+def create_eah(runs, nb_steps_probability=10):
     quality_min = min([min(run[1]) for run in runs])
     quality_max = max([max(run[1]) for run in runs])
 

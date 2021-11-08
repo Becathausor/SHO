@@ -28,8 +28,8 @@ def plot_runs(runs):
 
 
 @context_plot
-def plot_eah(eah):
-    plt.imshow(eah, cmap="Oranges", origin="lower")
+def plot_eaf(eaf):
+    plt.imshow(eaf, cmap="Oranges", origin="lower")
 
 
 @context_plot
@@ -38,7 +38,7 @@ def plot_ert(ert):
 
 
 @context_plot
-def plot_eaf(X, Y, eaf):
+def plot_eah(X, Y, eaf):
     fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
     surf = ax.plot_surface(X, Y, eaf,
                            linewidth=0, cmap=cm.coolwarm, antialiased=False)

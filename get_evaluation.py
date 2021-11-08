@@ -53,7 +53,7 @@ def to_file(method_name):
 def create_evaluation(n_runs, method_name="num_annealing"):
     clear_method(method_name)
     for k in range(n_runs):
-        os.system("python snp.py --solver {}".format(method_name))
+        os.system("python snp.py --solver {} --evaluation True --plot False".format(method_name))
         # exec(open('snp.py').read())
     return None
 
