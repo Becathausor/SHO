@@ -28,7 +28,7 @@ def plot_runs(runs):
 
 
 @context_plot
-def plot_eaf(eaf):
+def plot_eaf(eaf, extent=None):
     plt.imshow(eaf, cmap="Oranges", origin="lower")
 
 
