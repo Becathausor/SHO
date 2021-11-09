@@ -55,7 +55,8 @@ if __name__ == "__main__" or __name__ == "get_evaluation":
     can.add_argument("-a", "--variation-scale", metavar="RATIO", default=0.3, type=float,
                      help="Scale of the variation operators (as a ration of the domain width)")
 
-    can.add_argument("-p", "--plot", metavar="PLOT", default=False, type=bool,
+    # Personal arguments
+    can.add_argument("-p", "--plot", metavar="PLOT", default=True, type=bool,
                      help="Plots the sensors and the optimization curve")
 
     can.add_argument("--pop_size", metavar="POP_SIZE", default=15, type=int,
@@ -261,4 +262,3 @@ if __name__ == "__main__" or __name__ == "get_evaluation":
             raise NotImplementedError
 
         get_evaluation.evaluation_run(costs, val, the.solver)
-        print("A printé dans le .txt")

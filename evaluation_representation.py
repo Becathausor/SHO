@@ -12,6 +12,8 @@ def create_eaf(runs, nb_steps_costs=10, nb_steps_quality=10, reverse_eah=False):
     quality_min = min([min(run[1]) for run in runs])
     quality_max = max([max(run[1]) for run in runs])
 
+    extent = [cost_min, cost_max, quality_min, quality_max]
+
     def get_ind_cost(cost):
         """
         Computes the index of eah corresponding to the cost
@@ -56,7 +58,7 @@ def create_eaf(runs, nb_steps_costs=10, nb_steps_quality=10, reverse_eah=False):
         eah += eah_run
     if reverse_eah:
         eah = np.abs(eah - np.max(eah))
-    return eah
+    return eah, extent
 
 
 def create_ert(runs, delta):
