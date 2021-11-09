@@ -39,6 +39,8 @@ class ExperimentDesign:
         """Compute the median of runs performance at a given call budget."""
         list_performance = [run[1][min(self.budget, len(run[1]) - 1)] for run in runs]
         median = np.median(list_performance)
+        print(list_performance)
+        print(median)
         return median
 
     def compute_iqr(self, runs):
@@ -59,7 +61,10 @@ class ExperimentDesign:
                       f"-n {params['nb-sensors']} "
                       f"-r {params['sensor-range']} "
                       f"-w {params['domain-width']} "
-                      f"--solver {method}"
+                      f"--solver {method} "
+                      f"--iters {self.budget} "
+                      f"--evaluation True"
+
                       )
         return get_evaluation.get_data(method)
 
@@ -71,8 +76,9 @@ class ExperimentDesign:
         n_parameters = len(self.parameters)
 
         for method in self.list_methods:
+            print(f"GETTING DATA FOR METHOD {method}")
             for params in self.parameters:
-
+                print(f"Parameters: {params}")
                 # Get the median of the runs
                 runs = self.get_runs(method, params)
                 result = self.compute_median(runs)
@@ -129,4 +135,4 @@ class ExperimentDesign:
     def evaluate_bench_median(self):
         self.bench_medians()
         self.plot_medians()
-        return self.median
+        return self.medians
