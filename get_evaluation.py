@@ -50,10 +50,10 @@ def to_file(method_name):
     return "".join([method_name, ".txt"])
 
 
-def create_evaluation(n_runs, method_name="num_annealing"):
+def create_evaluation(n_runs, method_name="num_annealing", n_iters_max=100):
     clear_method(method_name)
     for k in range(n_runs):
-        os.system("python snp.py --solver {} --evaluation True --plot False".format(method_name))
+        os.system("python snp.py --solver {} --evaluation True --plot False --iters {".format(method_name, n_iters_max))
         # exec(open('snp.py').read())
     return None
 
