@@ -15,15 +15,19 @@ if __name__ == "__main__":
     RESOLUTION = 100
     DELTA = 650
     DELTAS = (600, 660, 675)
-    METHOD_NAMES = ["num_annealing", "bit_annealing", "num_genetical", "bit_genetical"]
+    METHOD_NAMES = ["num_annealing",
+                    "bit_annealing",
+                    "num_genetical",
+                    "bit_genetical"]
     PARAMETERS = [{'nb-sensors': 3, 'sensor-range': 0.3, 'domain-width': 30},
                   {'nb-sensors': 4, 'sensor-range': 0.3, 'domain-width': 30}]
     BUDGET = 90
+
     # CHOOSE WHAT TO RUN
-    RUN_CREATE_DATA = False
-    PLOT_TRAJECTORIES = False
-    RUN_EAF = False
-    RUN_ERT = False
+    RUN_CREATE_DATA = True
+    PLOT_TRAJECTORIES = True
+    RUN_EAF = True
+    RUN_ERT = True
     RUN_BENCH = True
 
     if RUN_CREATE_DATA:
@@ -43,6 +47,12 @@ if __name__ == "__main__":
         ert = evaluation_representation.create_ert(runs, DELTA)
         plot_evaluation.plot_ert(ert, title=METHOD_NAME + f"_ert, delta={DELTA}", y_label=f"P(Quality < {DELTA})")
 
+        # Plot erts for comparisons
+        print("PLOT ERT")
+        algo_comparison.compare_ert(METHOD_NAMES, nb_runs=N_RUNS, deltas=DELTAS,
+                                    title="Comparison of algorithms", y_label="P[x > delta]",
+                                    name_save="")
+
     if RUN_EAF:
         # Plot eaf
         print("PLOT EAF")
@@ -55,12 +65,3 @@ if __name__ == "__main__":
         bench = ExperimentDesign.ExperimentDesign(METHOD_NAMES, PARAMETERS, BUDGET, N_RUNS)
         medians = bench.evaluate_bench_median()
         print(medians)
-
-
-"""
-    # Plot erts
-    print("PLOT ERT")
-    algo_comparison.compare_ert(METHOD_NAMES, nb_runs=N_RUNS, deltas=DELTAS,
-                                title="Comparison of algorithms", y_label="P[x > delta]",
-                                name_save="")
-"""

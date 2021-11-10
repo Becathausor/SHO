@@ -33,7 +33,9 @@ Following the Design of Experiment, we concluded that the **num_genetical** solv
 How to run the project
 ------------------------
 
-In the terminal, write the following command “python test.py”. 
+In the terminal, write the following command “python **test.py**”. It will run the implemented algorithms to solve the problems and plots EAF, ERT at probability 0.5 and run a benchmark to compute the medians of our algorithms.   
+
+You can modify the different parameters in the file in the first section of test.py (PARAMETERS section). Notice that boolean variables are given to run specifically the different parts of the algorithm evaluation.
 
 Information about modified or created files
 -----------------------------------------
@@ -71,15 +73,6 @@ The file make.py has not been modified so you can replace the objective function
 > - You can decide on the living population size with the argument --pop_size when considering a population-based algorithm.
 
 
-TODO: 
-snp.py (-> 1 algo) = interface
-accusé de reception : johann@dreo.fr pour le rendu et johann.dreo@pasteur.fr pour la relance jeudi.
-archive zip : tout SHO 
-README
-où est l’algo OK
-où est l’EAF/EAH - ERT (une section dans l’EAF) OK
-démarche : comment on a choisi cet algo A FAIRE
-où est la fonction objectif ? OK
 
 
 
